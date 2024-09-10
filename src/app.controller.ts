@@ -1,12 +1,23 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
 
-@Controller()
+@Controller('plb')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor() {}
+
+  @Get('mathieu')
+  getHello(): string {
+    return 'Formation Nest';
+  }
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getHello2(): string {
+    return 'Formation Angular';
+  }
+
+  @Get('jp')
+  getJP(@Req() request: Request, @Res() reponse: Response) {
+    console.log(request);
+    return reponse.send('<H1>Bienvenue chez PLB</h1>');
   }
 }
