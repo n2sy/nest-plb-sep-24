@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { Task } from './models/task';
 
@@ -29,6 +36,10 @@ export class TaskController {
     //   return t.id == taskId;
     // });
     let selectedTask = this.allTasks.find((t) => t.id == taskId);
+    if (!selectedTask) {
+      // if(selectedTask == undefined || null)
+      throw new NotFoundException("Le task demandé n'existe pas");
+    }
 
     return { selectedTask: selectedTask };
   }
