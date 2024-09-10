@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
@@ -69,6 +70,24 @@ export class TaskController {
     return {
       message: 'Task mise à jour',
       allTasks: this.allTasks,
+    };
+  }
+
+  @Delete('delete/:taskid')
+  deleteTask(@Param('taskid') taskId) {
+    let indice = this.allTasks.findIndex((t) => t.id == taskId);
+    if (indice == -1) {
+      // if(selectedTask == undefined || null)
+      throw new NotFoundException(
+        "Le task que vous souhaitez mettre à jour n'existe pas",
+      );
+    }
+    //let abc = 10;
+    this.allTasks.splice(indice, 1);
+    return {
+      message: 'Task supprimé avec succès',
+      allTasks: this.allTasks,
+      //  abc : abc,
     };
   }
 }
