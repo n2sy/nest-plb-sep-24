@@ -10,7 +10,9 @@ import {
 export class addTaskDTO {
   @IsNotEmpty()
   @IsString()
-  @MinLength(6)
+  @MinLength(6, {
+    message: 'Le nbre minimal de caractères pour le title est 6',
+  })
   public title: string;
 
   @IsNotEmpty()

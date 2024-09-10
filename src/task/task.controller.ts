@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { Task } from './models/task';
+import { addTaskDTO } from './DTO/addTaskDTO';
 
 @Controller('task')
 export class TaskController {
@@ -21,7 +22,9 @@ export class TaskController {
   }
 
   @Post('new')
-  AddNewTask(@Body() body) {
+  AddNewTask(@Body() body: addTaskDTO) {
+    console.log(body instanceof addTaskDTO);
+
     let generatedId = uuidv4();
     let newTask = new Task(generatedId, body.title, body.year, body.statut);
 
