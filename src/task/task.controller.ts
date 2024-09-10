@@ -5,6 +5,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { Task } from './models/task';
@@ -46,11 +47,35 @@ export class TaskController {
 
     return { selectedTask: selectedTask };
   }
+
+  @Put('edit/:id')
+  updateTask(@Body() body, @Param('id') taskId) {
+    let indice = this.allTasks.findIndex((t) => t.id == taskId);
+    if (indice == -1) {
+      // if(selectedTask == undefined || null)
+      throw new NotFoundException(
+        "Le task que vous souhaitez mettre à jour n'existe pas",
+      );
+    }
+
+    this.allTasks[indice] = {
+      id: taskId,
+      title: body.title,
+      year: body.year,
+      statut: body.statut,
+      createdAt: this.allTasks[indice].createdAt,
+    };
+
+    return {
+      message: 'Task mise à jour',
+      allTasks: this.allTasks,
+    };
+  }
 }
 
-function test(a, b) {
-  return a + b;
-}
+// function test(a, b) {
+//   return a + b;
+// }
 
 //  (a, b) => {
 //     return a + b;
