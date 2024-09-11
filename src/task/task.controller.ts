@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Inject,
-  NotFoundException,
   Param,
   Post,
   Put,
@@ -16,17 +15,14 @@ import { TaskService } from './task.service';
 
 @Controller('task')
 export class TaskController {
-  allTasks = [];
-
   //constructor(private taskSer: TaskService) {}
 
   @Inject(TaskService) private taskSer;
 
   @Get('all')
   getAllTasks() {
-    return {
-      allTasks: this.allTasks,
-    };
+    let tab = this.taskSer.chercherTousLesTasks();
+    return { result: tab };
   }
 
   @Post('new')
@@ -37,65 +33,28 @@ export class TaskController {
 
   @Get('search/:id')
   getOneTask(@Param('id') taskId) {
-    console.log('id du task', taskId);
-    // let selectedTask = this.allTasks.find((t) => {
-    //   return t.id == taskId;
-    // });
-    let selectedTask = this.allTasks.find((t) => t.id == taskId);
-    if (!selectedTask) {
-      // if(selectedTask == undefined || null)
-      throw new NotFoundException("Le task demandé n'existe pas");
-    }
-
-    return { selectedTask: selectedTask };
+    let task = this.taskSer.chercherTaskParId(taskId);
+    return { searchedTask: task };
   }
 
   @Get('filter')
   filterTasks(@Query('year1') y1, @Query('year2') y2) {
-    let filtredTasks = this.allTasks.filter(
-      (t) => t.year >= y1 && t.year <= y2,
-    );
+    let filtredTasks = this.taskSer.chercherTasksParAnnees(y1, y2);
     return { result: filtredTasks };
   }
+
   @Put('edit/:id')
   updateTask(@Body() body, @Param('id') taskId) {
-    let indice = this.allTasks.findIndex((t) => t.id == taskId);
-    if (indice == -1) {
-      // if(selectedTask == undefined || null)
-      throw new NotFoundException(
-        "Le task que vous souhaitez mettre à jour n'existe pas",
-      );
-    }
-
-    this.allTasks[indice] = {
-      id: taskId,
-      title: body.title,
-      year: body.year,
-      statut: body.statut,
-      createdAt: this.allTasks[indice].createdAt,
-    };
-
-    return {
-      message: 'Task mise à jour',
-      allTasks: this.allTasks,
-    };
+    this.taskSer.modifierTask(taskId, body);
+    return { message: 'task modifié avec succès', id: taskId };
   }
 
   @Delete('delete/:taskid')
   deleteTask(@Param('taskid') taskId) {
-    let indice = this.allTasks.findIndex((t) => t.id == taskId);
-    if (indice == -1) {
-      // if(selectedTask == undefined || null)
-      throw new NotFoundException(
-        "Le task que vous souhaitez mettre à jour n'existe pas",
-      );
-    }
-    //let abc = 10;
-    this.allTasks.splice(indice, 1);
+    this.taskSer.supprimerTask(taskId);
     return {
       message: 'Task supprimé avec succès',
-      allTasks: this.allTasks,
-      //  abc : abc,
+      id: taskId,
     };
   }
 }
