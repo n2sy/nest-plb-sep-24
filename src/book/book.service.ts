@@ -16,4 +16,12 @@ export class BookService {
   ajouterLivre(nBook) {
     return this.bookRepo.save(nBook);
   }
+
+  chercherLivreParId(bookId) {
+    return this.bookRepo.find({
+      where: {
+        id: bookId,
+      },
+    });
+  }
 }
