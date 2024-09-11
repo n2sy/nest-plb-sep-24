@@ -1,4 +1,4 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { BookService } from './book.service';
 
 @Controller('book')
@@ -16,6 +16,12 @@ export class BookController {
     //     throw new ConflictException();
     //   });
     let result = await this.bookSer.chercherTousLesLivres();
+    return result;
+  }
+
+  @Post('add')
+  async addBook(@Body() body) {
+    let result = await this.bookSer.ajouterLivre(body);
     return result;
   }
 }

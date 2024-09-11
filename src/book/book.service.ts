@@ -12,4 +12,8 @@ export class BookService {
   chercherTousLesLivres() {
     return this.bookRepo.find();
   }
+
+  ajouterLivre(nBook) {
+    return this.bookRepo.save(nBook);
+  }
 }
