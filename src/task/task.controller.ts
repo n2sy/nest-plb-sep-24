@@ -3,19 +3,24 @@ import {
   Controller,
   Delete,
   Get,
+  Inject,
   NotFoundException,
   Param,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
-import { Task } from './models/task';
+
 import { addTaskDTO } from './DTO/addTaskDTO';
+import { TaskService } from './task.service';
 
 @Controller('task')
 export class TaskController {
   allTasks = [];
+
+  //constructor(private taskSer: TaskService) {}
+
+  @Inject(TaskService) private taskSer;
 
   @Get('all')
   getAllTasks() {
@@ -26,13 +31,8 @@ export class TaskController {
 
   @Post('new')
   AddNewTask(@Body() body: addTaskDTO) {
-    console.log(body instanceof addTaskDTO);
-
-    let generatedId = uuidv4();
-    let newTask = new Task(generatedId, body.title, body.year, body.statut);
-
-    this.allTasks.push(newTask);
-    return { tasksPLB: this.allTasks };
+    this.taskSer.ajouterTask(body);
+    return { message: 'task ajouté', tasksPLB: this.taskSer.allTasks };
   }
 
   @Get('search/:id')
