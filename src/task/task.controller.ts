@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { Task } from './models/task';
@@ -34,9 +35,9 @@ export class TaskController {
     return { tasksPLB: this.allTasks };
   }
 
-  @Get(':id')
+  @Get('search/:id')
   getOneTask(@Param('id') taskId) {
-    console.log(taskId);
+    console.log('id du task', taskId);
     // let selectedTask = this.allTasks.find((t) => {
     //   return t.id == taskId;
     // });
@@ -49,6 +50,13 @@ export class TaskController {
     return { selectedTask: selectedTask };
   }
 
+  @Get('filter')
+  filterTasks(@Query('year1') y1, @Query('year2') y2) {
+    let filtredTasks = this.allTasks.filter(
+      (t) => t.year >= y1 && t.year <= y2,
+    );
+    return { result: filtredTasks };
+  }
   @Put('edit/:id')
   updateTask(@Body() body, @Param('id') taskId) {
     let indice = this.allTasks.findIndex((t) => t.id == taskId);
