@@ -4,11 +4,13 @@ import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { RoleEnum } from './generics/role.enum';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserEntity) private userRep: Repository<UserEntity>,
+    private jwtSer: JwtService,
   ) {}
 
   async inscription(identifiants) {
@@ -42,7 +44,13 @@ export class AuthService {
 
     if (!result) throw new NotFoundException('Mot de passe erroné');
     else {
-      return u;
+      const token = this.jwtSer.sign({
+        id: u.id,
+        role: u.role,
+      });
+      return {
+        access_token: token,
+      };
     }
   }
 }
