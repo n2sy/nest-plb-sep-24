@@ -13,4 +13,13 @@ export class AuthController {
       result: data,
     };
   }
+
+  @Post('signin')
+  async sigin(@Body() credentials) {
+    let response = await this.authSer.seConnecter(credentials);
+    return {
+      message: 'User authentifé',
+      result: response,
+    };
+  }
 }
