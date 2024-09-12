@@ -45,4 +45,13 @@ export class BookService {
     let result = await this.chercherLivreParId(id);
     return this.bookRepo.remove(result);
   }
+
+  softsupprimerLivreV1(id) {
+    return this.bookRepo.softDelete(id);
+  }
+
+  async softsupprimerLivreV2(id) {
+    let result = await this.chercherLivreParId(id);
+    return this.bookRepo.softRemove(result);
+  }
 }

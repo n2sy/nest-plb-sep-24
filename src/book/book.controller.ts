@@ -39,7 +39,9 @@ export class BookController {
   @Get('all/:id')
   async getBookById(@Param('id') id) {
     let result = await this.bookSer.chercherLivreParId(id);
-    if (!result) throw new NotFoundException("Ce livre n'existe pas");
+
+    if (result.length == 0)
+      throw new NotFoundException("Ce livre n'existe pas");
     return result[0];
   }
 
@@ -60,9 +62,27 @@ export class BookController {
     };
   }
 
+  @Delete('softdelete/:id')
+  async softDeleteBook(@Param('id', ParseIntPipe) bookId) {
+    let result = await this.bookSer.softsupprimerLivreV1(bookId);
+    return {
+      message: result.affected + 'Livre(s) soft supprimé(s) avec succès',
+      result: result,
+    };
+  }
+
   @Delete('remove/:id')
   async removeBook(@Param('id', ParseIntPipe) bookId) {
     let result = await this.bookSer.supprimerLivreV2(bookId);
+    return {
+      //   message: result.affected + 'Livre(s) supprimé(s) avec succès',
+      result: result,
+    };
+  }
+
+  @Delete('softremove/:id')
+  async softRemoveBook(@Param('id', ParseIntPipe) bookId) {
+    let result = await this.bookSer.softsupprimerLivreV2(bookId);
     return {
       //   message: result.affected + 'Livre(s) supprimé(s) avec succès',
       result: result,
