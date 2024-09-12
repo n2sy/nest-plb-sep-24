@@ -18,7 +18,9 @@ export class UserEntity {
   })
   username: string;
 
-  @Column()
+  @Column({
+    default: '',
+  })
   password: string;
 
   @Column()
@@ -27,6 +29,7 @@ export class UserEntity {
   @Column({
     type: 'enum',
     enum: RoleEnum,
+    //default : RoleEnum.ROLE_USER
   })
   role;
 }
