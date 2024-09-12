@@ -8,6 +8,7 @@ import { MorganMiddleware } from '@nest-middlewares/morgan';
 import { HelmetMiddleware } from '@nest-middlewares/helmet';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookModule } from './book/book.module';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     TaskModule,
@@ -22,6 +23,7 @@ import { BookModule } from './book/book.module';
       synchronize: true,
     }),
     BookModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -9,7 +9,11 @@ export class AuthorService {
     @InjectRepository(AuthorEntity) private authRepo: Repository<AuthorEntity>,
   ) {}
   chercherTousLesAuteurs() {
-    return this.authRepo.find();
+    return this.authRepo.find({
+      relations: {
+        listeLivres: true,
+      },
+    });
   }
 
   ajouterAuteur(body) {

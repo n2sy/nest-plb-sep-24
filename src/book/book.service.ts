@@ -24,6 +24,7 @@ export class BookService {
 
   chercherLivreParId(bookId) {
     return this.bookRepo.find({
+      loadRelationIds: true,
       where: {
         id: bookId,
       },
