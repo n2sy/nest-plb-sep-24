@@ -78,4 +78,17 @@ export class BookService {
       .groupBy('book.year')
       .getRawMany();
   }
+
+  nbreLivresEntreDeuxAnnees(annee1, annee2) {
+    const qb = this.bookRepo.createQueryBuilder('book');
+    return (
+      qb
+        .select('book.year, count(book.id) as nbreDeLivres')
+        // .where('book.year >= :a1 AND book.year <= :a2', {a1 : annee1, a2 : annee2})
+        .where('book.year >= :a1 AND book.year <= :a2')
+        .setParameters({ a1: annee1, a2: annee2 })
+        .groupBy('book.year')
+        .getRawMany()
+    );
+  }
 }

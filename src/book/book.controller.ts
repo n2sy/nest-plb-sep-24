@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 
@@ -111,6 +112,17 @@ export class BookController {
   @Get('stats')
   async nbBooksPerYear() {
     let result = await this.bookSer.nbreLivresParAnnee();
+    return result;
+  }
+
+  @Get('stats2')
+  async nbBooksBetweenTwoYears(@Query() qp) {
+    console.log(qp);
+
+    let result = await this.bookSer.nbreLivresEntreDeuxAnnees(
+      qp.year1,
+      qp.year2,
+    );
     return result;
   }
 }
