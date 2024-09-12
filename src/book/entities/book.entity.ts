@@ -23,6 +23,8 @@ export class BookEntity extends Timestamp {
   })
   year: number;
 
-  @ManyToOne(() => AuthorEntity, (a) => a.listeLivres)
+  @ManyToOne(() => AuthorEntity, (a) => a.listeLivres, {
+    //cascade: true,
+  })
   author: AuthorEntity;
 }

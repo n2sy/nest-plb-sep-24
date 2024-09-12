@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -13,10 +14,12 @@ import {
   Query,
 } from '@nestjs/common';
 import { BookService } from './book.service';
+import { AuthorService } from './author.service';
 
 @Controller('book')
 export class BookController {
   @Inject(BookService) bookSer: BookService;
+  @Inject(AuthorService) authSer: AuthorService;
 
   @Get('all')
   async getAllBooks() {
@@ -34,6 +37,11 @@ export class BookController {
 
   @Post('add')
   async addBook(@Body() body) {
+    let myAuthor = await this.authSer.chercherAuteurParId(body.author);
+    if (!myAuthor)
+      // if(myAuthor == null)
+      throw new BadRequestException();
+
     let result = await this.bookSer.ajouterLivre(body);
     return result;
   }
