@@ -7,6 +7,7 @@ import {
   NotFoundException,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put,
 } from '@nestjs/common';
@@ -85,6 +86,24 @@ export class BookController {
     let result = await this.bookSer.softsupprimerLivreV2(bookId);
     return {
       //   message: result.affected + 'Livre(s) supprimé(s) avec succès',
+      result: result,
+    };
+  }
+
+  @Delete('restore/:id')
+  async restoreBook(@Param('id', ParseIntPipe) bookId) {
+    let result = await this.bookSer.restoreLivre(bookId);
+    return {
+      message: 'Livre restauré',
+      result: result,
+    };
+  }
+
+  @Patch('recover/:id')
+  async recoverBook(@Param('id', ParseIntPipe) bookId) {
+    let result = await this.bookSer.recoverLivre(bookId);
+    return {
+      message: 'Livre recover',
       result: result,
     };
   }

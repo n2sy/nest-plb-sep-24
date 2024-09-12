@@ -54,4 +54,20 @@ export class BookService {
     let result = await this.chercherLivreParId(id);
     return this.bookRepo.softRemove(result);
   }
+
+  restoreLivre(id) {
+    return this.bookRepo.restore(id);
+  }
+
+  async recoverLivre(bookId) {
+    let result = await this.bookRepo.find({
+      withDeleted: true,
+      where: {
+        id: bookId,
+      },
+    });
+    console.log(result);
+
+    return this.bookRepo.recover(result);
+  }
 }
