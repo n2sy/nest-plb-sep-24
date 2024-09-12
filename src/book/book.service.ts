@@ -10,7 +10,12 @@ export class BookService {
   ) {}
 
   chercherTousLesLivres() {
-    return this.bookRepo.find();
+    return this.bookRepo.find({
+      //loadRelationIds: true,
+      relations: {
+        author: true,
+      },
+    });
   }
 
   ajouterLivre(nBook) {
