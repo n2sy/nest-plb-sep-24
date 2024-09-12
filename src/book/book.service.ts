@@ -70,4 +70,12 @@ export class BookService {
 
     return this.bookRepo.recover(result);
   }
+
+  nbreLivresParAnnee() {
+    const qb = this.bookRepo.createQueryBuilder('book');
+    return qb
+      .select('book.year, count(book.id) as nbreDeLivres')
+      .groupBy('book.year')
+      .getRawMany();
+  }
 }

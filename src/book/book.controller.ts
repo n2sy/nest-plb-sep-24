@@ -107,4 +107,10 @@ export class BookController {
       result: result,
     };
   }
+
+  @Get('stats')
+  async nbBooksPerYear() {
+    let result = await this.bookSer.nbreLivresParAnnee();
+    return result;
+  }
 }
