@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookEntity } from './entities/book.entity';
 import { AuthorController } from './author.controller';
 import { AuthorService } from './author.service';
+import { AuthorEntity } from './entities/author.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([BookEntity])],
+  imports: [TypeOrmModule.forFeature([BookEntity, AuthorEntity])],
   providers: [BookService, AuthorService],
   controllers: [BookController, AuthorController],
 })

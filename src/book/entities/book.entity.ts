@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Timestamp } from '../timestamp/timestamp';
+import { AuthorEntity } from './author.entity';
 
 @Entity('livre')
 export class BookEntity extends Timestamp {
@@ -21,4 +22,7 @@ export class BookEntity extends Timestamp {
     type: 'int',
   })
   year: number;
+
+  @ManyToOne(() => AuthorEntity, (a) => a.listeLivres)
+  author: AuthorEntity;
 }

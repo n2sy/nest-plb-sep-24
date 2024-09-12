@@ -1,12 +1,30 @@
 import { Injectable } from '@nestjs/common';
+import { AuthorEntity } from './entities/author.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthorService {
-  chercherTousLesAuteurs() {}
+  constructor(
+    @InjectRepository(AuthorEntity) private authRepo: Repository<AuthorEntity>,
+  ) {}
+  chercherTousLesAuteurs() {
+    return this.authRepo.find();
+  }
 
-  ajouterAuteur() {}
+  ajouterAuteur(body) {
+    return this.authRepo.save(body);
+  }
 
-  chercherAuteurParId() {}
+  chercherAuteurParId(authorId) {
+    return this.authRepo.findOne({
+      where: {
+        id: authorId,
+      },
+    });
+  }
 
-  supprimerAuteur() {}
+  supprimerAuteur(id) {
+    return this.authRepo.softDelete(id);
+  }
 }
