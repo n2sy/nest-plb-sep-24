@@ -17,6 +17,8 @@ export class AuthController {
   @Post('signin')
   async sigin(@Body() credentials) {
     let response = await this.authSer.seConnecter(credentials);
+    console.log(response);
+
     return {
       message: 'User authentifé',
       result: response,

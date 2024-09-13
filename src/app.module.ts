@@ -2,13 +2,13 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TaskModule } from './task/task.module';
-import { FirstMiddleware } from './first/first.middleware';
-import { SecondMiddleware } from './second/second.middleware';
 import { MorganMiddleware } from '@nest-middlewares/morgan';
 import { HelmetMiddleware } from '@nest-middlewares/helmet';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookModule } from './book/book.module';
 import { AuthModule } from './auth/auth.module';
+import { TokenMiddleware } from './token/token.middleware';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     TaskModule,
@@ -24,6 +24,12 @@ import { AuthModule } from './auth/auth.module';
     }),
     BookModule,
     AuthModule,
+    JwtModule.register({
+      secret: 'supersecretcode',
+      signOptions: {
+        expiresIn: '3600s',
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -43,8 +49,9 @@ export class AppModule implements NestModule {
     //     method: RequestMethod.POST,
     //   },
     // );
-    consumer.apply(SecondMiddleware).forRoutes('');
-    consumer.apply(FirstMiddleware).forRoutes('');
+    // consumer.apply(SecondMiddleware).forRoutes('');
+    // consumer.apply(FirstMiddleware).forRoutes('');
+    consumer.apply(TokenMiddleware).forRoutes('book*');
     MorganMiddleware.configure('dev');
     consumer.apply(MorganMiddleware).forRoutes('');
     HelmetMiddleware.configure({});
