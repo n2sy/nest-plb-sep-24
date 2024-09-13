@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BookEntity } from './entities/book.entity';
 import { Repository } from 'typeorm';
@@ -65,9 +65,15 @@ export class BookService {
     return this.bookRepo.softDelete(id);
   }
 
-  async softsupprimerLivreV2(id) {
-    let result = await this.chercherLivreParId(id);
-    return this.bookRepo.softRemove(result);
+  async softsupprimerLivreV2(bookId, userId) {
+    let result = await this.chercherLivreParId(bookId);
+    console.log(result, userId);
+
+    if (result[0]['user'] == userId) return this.bookRepo.softRemove(result);
+    else
+      throw new UnauthorizedException(
+        "Vous n'êtes pas celui qui a ajouté le livre d'id " + bookId,
+      );
   }
 
   restoreLivre(id) {

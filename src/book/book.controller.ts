@@ -100,9 +100,16 @@ export class BookController {
     };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete('softremove/:id')
-  async softRemoveBook(@Param('id', ParseIntPipe) bookId) {
-    let result = await this.bookSer.softsupprimerLivreV2(bookId);
+  async softRemoveBook(
+    @Req() request: Request,
+    @Param('id', ParseIntPipe) bookId,
+  ) {
+    let result = await this.bookSer.softsupprimerLivreV2(
+      bookId,
+      request.user['id'],
+    );
     return {
       //   message: result.affected + 'Livre(s) supprimé(s) avec succès',
       result: result,
