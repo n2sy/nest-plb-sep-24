@@ -14,14 +14,17 @@ import {
   Query,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { AuthorService } from './author.service';
 import { JwtAuthGuard } from 'src/jwt-auth/jwt-auth.guard';
 import { Request } from 'express';
 import { AdminAuthGuard } from 'src/admin-auth/admin-auth.guard';
+import { DurationInterceptor } from '../duration/duration.interceptor';
 
 @Controller('book')
+// @UseInterceptors(DurationInterceptor)
 export class BookController {
   @Inject(BookService) bookSer: BookService;
   @Inject(AuthorService) authSer: AuthorService;
@@ -55,8 +58,6 @@ export class BookController {
   @UseGuards(JwtAuthGuard)
   @Get('all/:id')
   async getBookById(@Req() request: Request, @Param('id') id) {
-    console.log(request);
-
     let result = await this.bookSer.chercherLivreParId(id);
 
     if (result.length == 0)
