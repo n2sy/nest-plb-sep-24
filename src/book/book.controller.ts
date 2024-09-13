@@ -12,11 +12,13 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { AuthorService } from './author.service';
 import { JwtAuthGuard } from 'src/jwt-auth/jwt-auth.guard';
+import { Request } from 'express';
 
 @Controller('book')
 export class BookController {
@@ -37,20 +39,23 @@ export class BookController {
     return result;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('add')
-  async addBook(@Body() body) {
+  async addBook(@Req() request: Request, @Body() body) {
     let myAuthor = await this.authSer.chercherAuteurParId(body.author);
     if (!myAuthor)
       // if(myAuthor == null)
       throw new BadRequestException();
 
-    let result = await this.bookSer.ajouterLivre(body);
+    let result = await this.bookSer.ajouterLivre(body, request.user['id']);
     return result;
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('all/:id')
-  async getBookById(@Param('id') id) {
+  async getBookById(@Req() request: Request, @Param('id') id) {
+    console.log(request);
+
     let result = await this.bookSer.chercherLivreParId(id);
 
     if (result.length == 0)

@@ -18,8 +18,17 @@ export class BookService {
     });
   }
 
-  ajouterLivre(nBook) {
-    return this.bookRepo.save(nBook);
+  ajouterLivre(nBook, idUser) {
+    //nBook.user = idUser;
+    let newBook = this.bookRepo.create({
+      // title: nBook.title,
+      // editor: nBook.editor,
+      // year: nBook.year,
+      // author: nBook.author,
+      ...nBook,
+      user: idUser,
+    });
+    return this.bookRepo.save(newBook);
   }
 
   chercherLivreParId(bookId) {
