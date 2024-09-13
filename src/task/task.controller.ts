@@ -12,7 +12,10 @@ import {
 
 import { addTaskDTO } from './DTO/addTaskDTO';
 import { TaskService } from './task.service';
+import { ApiTags } from '@nestjs/swagger';
+import { UpperandfusionPipe } from '../upperandfusion/upperandfusion.pipe';
 
+@ApiTags('Tâches')
 @Controller('task')
 export class TaskController {
   //constructor(private taskSer: TaskService) {}
@@ -56,6 +59,11 @@ export class TaskController {
       message: 'Task supprimé avec succès',
       id: taskId,
     };
+  }
+
+  @Get('testpipe')
+  testerPipe(@Body('tab', UpperandfusionPipe) tab) {
+    return { result: tab };
   }
 }
 

@@ -22,8 +22,10 @@ import { JwtAuthGuard } from 'src/jwt-auth/jwt-auth.guard';
 import { Request } from 'express';
 import { AdminAuthGuard } from 'src/admin-auth/admin-auth.guard';
 import { DurationInterceptor } from '../duration/duration.interceptor';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('book')
+@ApiTags('Livres')
 // @UseInterceptors(DurationInterceptor)
 export class BookController {
   @Inject(BookService) bookSer: BookService;

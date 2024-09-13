@@ -8,8 +8,10 @@ import {
   Post,
 } from '@nestjs/common';
 import { AuthorService } from './author.service';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('author')
+@ApiTags('Auteurs')
 export class AuthorController {
   @Inject(AuthorService) private authSer: AuthorService;
 
