@@ -19,6 +19,7 @@ import { BookService } from './book.service';
 import { AuthorService } from './author.service';
 import { JwtAuthGuard } from 'src/jwt-auth/jwt-auth.guard';
 import { Request } from 'express';
+import { AdminAuthGuard } from 'src/admin-auth/admin-auth.guard';
 
 @Controller('book')
 export class BookController {
@@ -63,6 +64,7 @@ export class BookController {
     return result[0];
   }
 
+  @UseGuards(JwtAuthGuard, AdminAuthGuard)
   @Put('edit/:id')
   async updateBook(@Body() body, @Param('id', ParseIntPipe) bookId) {
     console.log(typeof bookId);
