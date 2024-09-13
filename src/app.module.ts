@@ -7,7 +7,6 @@ import { HelmetMiddleware } from '@nest-middlewares/helmet';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookModule } from './book/book.module';
 import { AuthModule } from './auth/auth.module';
-import { TokenMiddleware } from './token/token.middleware';
 import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
@@ -51,7 +50,7 @@ export class AppModule implements NestModule {
     // );
     // consumer.apply(SecondMiddleware).forRoutes('');
     // consumer.apply(FirstMiddleware).forRoutes('');
-    consumer.apply(TokenMiddleware).forRoutes('book*');
+    //consumer.apply(TokenMiddleware).forRoutes('book*');
     MorganMiddleware.configure('dev');
     consumer.apply(MorganMiddleware).forRoutes('');
     HelmetMiddleware.configure({});
