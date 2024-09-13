@@ -106,10 +106,7 @@ export class BookController {
     @Req() request: Request,
     @Param('id', ParseIntPipe) bookId,
   ) {
-    let result = await this.bookSer.softsupprimerLivreV2(
-      bookId,
-      request.user['id'],
-    );
+    let result = await this.bookSer.softsupprimerLivreV2(bookId, request.user);
     return {
       //   message: result.affected + 'Livre(s) supprimé(s) avec succès',
       result: result,

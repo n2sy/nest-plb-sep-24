@@ -8,23 +8,27 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookModule } from './book/book.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
 @Module({
   imports: [
     TaskModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 8889,
-      username: 'root',
-      password: 'root', // ''
-      database: 'bibplb',
+      host: process.env.HOST,
+      port: Number(process.env.DB_PORT),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD, // ''
+      database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: true,
     }),
     BookModule,
     AuthModule,
     JwtModule.register({
-      secret: 'supersecretcode',
+      secret: process.env.JWT_SECRETCODE,
       signOptions: {
         expiresIn: '3600s',
       },

@@ -6,12 +6,15 @@ import { UserEntity } from './entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity]),
     JwtModule.register({
-      secret: 'supersecretcode',
+      secret: process.env.JWT_SECRETCODE,
       signOptions: {
         expiresIn: '3600s',
       },
