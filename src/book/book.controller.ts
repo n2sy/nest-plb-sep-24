@@ -12,9 +12,11 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { AuthorService } from './author.service';
+import { JwtAuthGuard } from 'src/jwt-auth/jwt-auth.guard';
 
 @Controller('book')
 export class BookController {
@@ -46,6 +48,7 @@ export class BookController {
     return result;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('all/:id')
   async getBookById(@Param('id') id) {
     let result = await this.bookSer.chercherLivreParId(id);
