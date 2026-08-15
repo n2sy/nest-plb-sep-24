@@ -14,14 +14,12 @@ import {
   Query,
   Req,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { AuthorService } from './author.service';
 import { JwtAuthGuard } from 'src/jwt-auth/jwt-auth.guard';
 import { Request } from 'express';
 import { AdminAuthGuard } from 'src/admin-auth/admin-auth.guard';
-import { DurationInterceptor } from '../duration/duration.interceptor';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('book')
@@ -31,6 +29,7 @@ export class BookController {
   @Inject(BookService) bookSer: BookService;
   @Inject(AuthorService) authSer: AuthorService;
 
+  @UseGuards(JwtAuthGuard)
   @Get('all')
   async getAllBooks() {
     // this.bookSer
@@ -52,7 +51,6 @@ export class BookController {
     if (!myAuthor)
       // if(myAuthor == null)
       throw new BadRequestException();
-
     let result = await this.bookSer.ajouterLivre(body, request.user['id']);
     return result;
   }
@@ -76,6 +74,7 @@ export class BookController {
     return result;
   }
 
+  @UseGuards(JwtAuthGuard, AdminAuthGuard)
   @Delete('delete/:id')
   async deleteBook(@Param('id', ParseIntPipe) bookId) {
     let result = await this.bookSer.supprimerLivreV1(bookId);
@@ -84,7 +83,7 @@ export class BookController {
       result: result,
     };
   }
-
+  @UseGuards(JwtAuthGuard, AdminAuthGuard)
   @Delete('softdelete/:id')
   async softDeleteBook(@Param('id', ParseIntPipe) bookId) {
     let result = await this.bookSer.softsupprimerLivreV1(bookId);
@@ -94,6 +93,7 @@ export class BookController {
     };
   }
 
+  @UseGuards(JwtAuthGuard, AdminAuthGuard)
   @Delete('remove/:id')
   async removeBook(@Param('id', ParseIntPipe) bookId) {
     let result = await this.bookSer.supprimerLivreV2(bookId);
@@ -103,7 +103,7 @@ export class BookController {
     };
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminAuthGuard)
   @Delete('softremove/:id')
   async softRemoveBook(
     @Req() request: Request,
@@ -116,6 +116,7 @@ export class BookController {
     };
   }
 
+  @UseGuards(JwtAuthGuard, AdminAuthGuard)
   @Delete('restore/:id')
   async restoreBook(@Param('id', ParseIntPipe) bookId) {
     let result = await this.bookSer.restoreLivre(bookId);
@@ -125,6 +126,7 @@ export class BookController {
     };
   }
 
+  @UseGuards(JwtAuthGuard, AdminAuthGuard)
   @Patch('recover/:id')
   async recoverBook(@Param('id', ParseIntPipe) bookId) {
     let result = await this.bookSer.recoverLivre(bookId);
@@ -133,13 +135,13 @@ export class BookController {
       result: result,
     };
   }
-
+  @UseGuards(JwtAuthGuard)
   @Get('stats')
   async nbBooksPerYear() {
     let result = await this.bookSer.nbreLivresParAnnee();
     return result;
   }
-
+  @UseGuards(JwtAuthGuard)
   @Get('stats2')
   async nbBooksBetweenTwoYears(@Query() qp) {
     console.log(qp);
