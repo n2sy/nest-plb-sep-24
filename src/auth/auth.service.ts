@@ -14,12 +14,18 @@ export class AuthService {
   ) {}
 
   async inscription(identifiants) {
+    // 1. Compter le nombre d'utilisateurs existants dans la table
+    const usersCount = await this.userRep.count();
+
+    // 2. Assigner le rôle (Admin si 0 utilisateur, User pour les suivants)
+    const assignedRole =
+      usersCount === 0 ? RoleEnum.ROLE_ADMIN : RoleEnum.ROLE_USER;
     let newUser = this.userRep.create({
       email: identifiants.email,
       username: identifiants.username,
       //   password : identifiants.password,
       salt: await bcrypt.genSalt(),
-      role: RoleEnum.ROLE_USER,
+      role: assignedRole,
     });
 
     newUser.password = await bcrypt.hash(identifiants.password, newUser.salt);

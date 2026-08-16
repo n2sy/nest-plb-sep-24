@@ -24,6 +24,12 @@ export class BookEntity extends Timestamp {
   })
   year: number;
 
+  @Column({ nullable: true, length: 500 })
+  image: string;
+
+  @Column()
+  summary: string;
+
   @ManyToOne(() => AuthorEntity, (a) => a.listeLivres, {
     //cascade: true,
   })

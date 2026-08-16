@@ -16,7 +16,7 @@ export class DurationInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       tap(() => {
-        console.log(context.getHandler().name);
+        //console.log(context.getHandler().name);
         if (context.getHandler().name == 'getAllBooks') {
           const dateOut = Date.now();
           const diff = dateOut - dateIn;

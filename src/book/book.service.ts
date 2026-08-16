@@ -1,13 +1,19 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BookEntity } from './entities/book.entity';
 import { Repository } from 'typeorm';
 import { RoleEnum } from 'src/auth/generics/role.enum';
+import { FavoriteService } from './favorite.service';
 
 @Injectable()
 export class BookService {
   constructor(
     @InjectRepository(BookEntity) private bookRepo: Repository<BookEntity>,
+    private FavService: FavoriteService,
   ) {}
 
   chercherTousLesLivres() {
@@ -48,13 +54,19 @@ export class BookService {
       title: uBook.title,
       year: uBook.year,
       editor: uBook.editor,
+      image: uBook.image,
+      summary: uBook.summary,
+      author: uBook.author,
     });
+    if (!b) throw new NotFoundException("Ce livre n'existe pas");
 
     return this.bookRepo.save(b);
   }
 
   supprimerLivreV1(id) {
-    return this.bookRepo.delete(id);
+    let res = this.bookRepo.delete(id);
+    this.FavService.supprimerFavorisDuLivre(id);
+    return res;
   }
 
   async supprimerLivreV2(id) {

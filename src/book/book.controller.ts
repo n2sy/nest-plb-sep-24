@@ -3,26 +3,34 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
   Inject,
+  MaxFileSizeValidator,
   NotFoundException,
   Param,
+  ParseFilePipe,
   ParseIntPipe,
   Patch,
   Post,
   Put,
   Query,
   Req,
+  Res,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { AuthorService } from './author.service';
 import { JwtAuthGuard } from 'src/jwt-auth/jwt-auth.guard';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { AdminAuthGuard } from 'src/admin-auth/admin-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 
-@Controller('book')
+@Controller('books')
 @ApiTags('Livres')
 // @UseInterceptors(DurationInterceptor)
 export class BookController {
@@ -44,7 +52,7 @@ export class BookController {
     return result;
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminAuthGuard)
   @Post('add')
   async addBook(@Req() request: Request, @Body() body) {
     let myAuthor = await this.authSer.chercherAuteurParId(body.author);
@@ -151,5 +159,54 @@ export class BookController {
       qp.year2,
     );
     return result;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('cover', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const randomName =
+            file.originalname.replace(/\s/g, '').substring(0, 3) +
+            Date.now() +
+            '.' +
+            file.originalname.split('.')[1];
+          console.log(randomName);
+
+          cb(null, randomName);
+        },
+      }),
+    }),
+  )
+  uploadFile4(
+    @Res() response,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({
+            maxSize: 150000,
+            message: "Taille de l'image trop grande",
+          }),
+          new FileTypeValidator({
+            fileType: 'image/(jpg|jpeg|png)',
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    console.log(file);
+
+    return response.json({
+      orginalName: file.originalname,
+      fileName: file.filename,
+    });
+  }
+
+  @Get('images/:filename')
+  getFile(@Res() response: Response, @Param('filename') filename) {
+    response.sendFile(filename, { root: 'uploads' });
   }
 }
